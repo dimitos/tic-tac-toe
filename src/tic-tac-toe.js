@@ -1,33 +1,46 @@
 class TicTacToe {
   constructor() {
-    this.fieldСount = 0; // количество закрытых полей
-    this.mark = 'X';
+    this.counter = 0; // количество закрытых полей
+    this.mark = 'x'; // начинает
+    this.winner = null; // победитель
     this.map = [
       [null, null, null],
       [null, null, null],
       [null, null, null],
     ];
   }
-  //должен вернуться x или o
+
+  // должен вернуться x или o
   getCurrentPlayerSymbol() {
-    return (this.mark = this.mark === 'X' ? 'O' : 'X');
+    return this.mark;
   }
 
-  //должен правильно обновить состояние класса (изменить текущего игрока, обновить хранилище меток и т. д.)
-  nextTurn(rowIndex, columnIndex) {}
+  // должен правильно обновить состояние класса (изменить текущего игрока, обновить хранилище меток и т. д.)
+  nextTurn(rowIndex, columnIndex) {
+    if (this.map[rowIndex][columnIndex] === null) {
+      this.map[rowIndex][columnIndex] = this.getCurrentPlayerSymbol();
+      this.mark = this.mark === 'x' ? 'o' : 'x';
+      this.counter++;
+      return true;
+    }
+
+    return false;
+  }
 
   // должен возвращать истину, если игра завершена (например, есть победитель или это ничья)
   isFinished() {
-    return this.getWinner() !== null || isDraw();
+    return this.getWinner() !== null || this.isDraw();
   }
 
-  // должен возвращать символ победителя ( x или o) или null, если победителя еще нет
-  // проверяем есть ли победитель
+  // должен возвращать символ победителя ( x или o) или null, если победителя еще нет, проверяем есть ли победитель
   getWinner() {
-    const arr = this.map;
+    let arr = this.map;
 
     arr.forEach((el) => {
-      if (el[0] === el[1] && el[0] === el[2] && el[0] !== null) return el[0];
+      if (el[0] === el[1] && el[0] === el[2] && el[0] !== null) {
+        this.winner = el[0];
+        return el[0];
+      }
     });
 
     for (let i = 0; i < 3; i++) {
@@ -36,6 +49,7 @@ class TicTacToe {
         arr[0][i] === arr[2][i] &&
         arr[0][i] !== null
       ) {
+        this.winner = arr[0][i];
         return arr[0][i];
       }
     }
@@ -45,6 +59,7 @@ class TicTacToe {
       arr[1][1] === arr[2][2] &&
       arr[1][1] !== null
     ) {
+      this.winner = arr[1][1];
       return arr[1][1];
     }
 
@@ -53,16 +68,17 @@ class TicTacToe {
       arr[1][1] === arr[2][0] &&
       arr[1][1] !== null
     ) {
+      this.winner = arr[1][1];
       return arr[1][1];
     }
 
-    return null;
+    return this.winner;
   }
 
-  //должен вернуть истину, если больше нет полей для размещения x или o, если больше нет ходов
+  // должен вернуть истину, если больше нет полей для размещения x или o, больше нет ходов
   // ложь, если ходы есть
   noMoreTurns() {
-    return this.fieldСount >= 9;
+    return this.counter >= 9;
   }
 
   // Это ничья, метод должен вернуть истину, если ходов больше нет и нет победителя
